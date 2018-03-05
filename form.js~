@@ -1,0 +1,155 @@
+/* CS 304 Final Project: Wellesley Reimbursement Website
+Team name: CHiLY
+Programmers: Clare Lee, Hanae Yaskawa
+File: form.js
+Description: This adds asynchronous functions to the reimbursement form, allowing for extra features to appear dynamically on the form as the treasurer enters data.
+*/
+
+// ----------
+// Function called to dynamically calculate total amount asked for reimbursement
+// Totals amount from SOFC, Profits, and CLCE rows in FOAPAL table
+
+function calcTotal(){
+    console.log("Called to function calcTotal()...");
+    var num1 = parseFloat(document.getElementById("sofc_amnt").value);
+    var num2 = parseFloat(document.getElementById("profit_amnt").value);
+    var num3 = parseFloat(document.getElementById("clce_amnt").value);
+    document.getElementById("ttl_amnt").value = (num1+num2+num3).toFixed(2);
+};
+
+
+// ----------
+// Function called to add a row to table of reimbursements on reimbursement form
+function addReimb() {
+   
+    // gets current number of reimbursement items and adds one
+    var n = parseInt(document.getElementById("numReimbItems").value)+1;
+    console.log("There are now "+ n + " reimbursement items in hidden value");
+
+    var eventName = '"event'+n +'"';
+    var newevent = '<td><input type="text" name=' + eventName + ' placeholder="Event name"></td>';
+    
+    var dateName = '"edate'+n + '"';
+    var newdate = '<td><input type="date" name='+ dateName + '></td>';
+    
+    var numName = '"num_attendees'+n + '"';
+    var newnum = '<td><input type="number" name='+ numName + ' min="1" step="1" placeholder="Number of attendees"></td>';
+    
+    var categoryName = '"category' + n + '"';
+    var newcategory = '<td><input type="text" name=' + categoryName + ' placeholder="Category"></td>';
+    
+    var amntName = '"amnt'+n + '"';
+    var newamnt = '<td><input type="number" name=' + amntName + ' step="0.01" min="0" placeholder="Amount"></td>';
+    
+    var fundsrcName = '"fundsrc'+n+'"';
+    var newfundsrc = '<td><select name='+fundsrcName+'><option value="" disabled selected>Select Source</option><option value="Profits">Profits</option><option value="sofc">SOFC deadline</option><option value="GP">GP org</option><option value="CLCE">CLCE</option></td>';
+
+    var newrow = '<tr id="row'+n+'">'+newevent+newdate+newnum+newcategory+newamnt+newfundsrc+'</tr>';
+   
+    $("#list_reimb").append(newrow);
+
+    // updates number of reimbursement items in table
+    $("#numReimbItems").val(n);
+
+    console.log("finished adding reimb item #"+n);
+};
+
+
+// ----------
+// Function called to remove last row of reimbursement items added to reimbursement table
+// Will not remove a row if there is only one reimbursement item remaining
+
+function removeReimb(){
+    // first gets current number of reimbursement items
+    var n = parseInt(document.getElementById("numReimbItems").value);
+    // if there is more than one reimbursement item
+    if (n>1){
+	$("#list_reimb tr:last").remove();
+	// updates number of reimbursement items
+	$("#numReimbItems").val(n-1);
+	console.log("Called function removeReimb, now " + (document.getElementById('numReimbItems').value)+" remain");
+    }
+};
+
+
+// ----------
+// Function called to add another receipt to upload
+
+function addReceipt() {
+    console.log("Called to function addReceipt...");
+
+    // gets current number of receipts    
+    var n = parseInt(document.getElementById("numReceipts").value)+1;
+    var newName = "receipt"+n;
+    $("#receipts").append('<input type="file" class="receipts" name='+newName+'>');
+
+    // updates number of receipts in hidden value
+    $("#numReceipts").val(n);
+    console.log("finished adding receipt upload.");
+};
+
+
+// ----------
+// Function called to remove a receipt
+// Only removes list if there is more than one 
+
+function removeReceipt(){
+    console.log("Called to function removeReceipt...");
+
+    // gets current number of receipts and adds one
+    var n = parseInt(document.getElementById("numReceipts").value);
+    console.log("There are "+n+" file inputs in receipts div");
+
+    // if there is at least one receipt file input
+    if (n>1){
+
+	// removes the last dynamically added file input
+	$("#receipts input").last().remove();
+
+	// updates number of receipts
+	$("#numReceipts").val(n-1);
+	console.log("finished removing receipt upload.");
+    }
+};
+
+
+// ----------
+// Function called to add another list of attendees to upload
+
+function addAttendees() {
+    console.log("Called to function addAttendees...");
+
+    // gets current number of attendees lists and adds one
+    var n = parseInt(document.getElementById("numAttendees").value)+1;
+    var newName = "attendees"+n;
+    $("#listattendees").append('<input type="file" class="listattendees" name='+newName+'>');
+
+    // updates number of attendees lists
+    $("#numAttendees").val(n);
+    console.log("finished adding list of attendees upload.");
+};
+
+
+// ----------
+// Function called to remove the most recently added list of attendees
+// Only removes list if there is more than one 
+
+function removeAttendees(){
+    console.log("Called to function removeAttendees...");
+
+    // gets current number of attendees lists
+    var n = parseInt(document.getElementById("numAttendees").value);
+    console.log("There are "+n+" file inputs in listattendees div");
+
+    // if there is more than one file input 
+    if (n>1){
+
+	// removes the last dynamically added file input      
+        $("#listattendees input").last().remove();
+
+	// updates number of attendees lists
+	$("#numAttendees").val(n-1);
+        console.log("finished removing listattendees upload.");
+    }
+};
+

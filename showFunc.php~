@@ -1,0 +1,242 @@
+<?php
+/*
+CS 304 Final Project: Wellesley Reimbursement Website
+Team name: CHiLY
+Programmers: Clare Lee, Hanae Yaskawa
+File: displayFunc.php
+
+Description: Contains function called by form.php to insert data from form
+into database when submit button is clicked.
+*/
+
+
+// ----------
+// global variable: used to find jpgs of receipts and lists of attendees 
+// within beta folder
+$destsubdir = "beta";
+
+// ----------
+// Function gets orgid, given fid and connection to database
+function getOrgid($conn, $fid) {
+   $fsql = "select orgid from forms where fid=$fid";
+   $fresult = query($conn, $fsql);
+   $row = $fresult->fetchRow(MDB2_FETCHMODE_ASSOC);
+   $orgid = $row['orgid']; 
+   echo ("<script>console.log( 'Successfully got org $orgid' );</script>");
+   return $orgid;
+}
+
+
+// ----------
+// Function takes in db connection and orgid, returns row that is result
+// of query that searches for all details about the org
+function getOrgInfo($conn, $orgid) {
+   $osql = "select * from orgs where orgid=$orgid";
+   $oresult = query($conn, $osql);
+   $row = $oresult->fetchRow(MDB2_FETCHMODE_ASSOC);
+   return $row;
+}
+
+
+// ----------
+// Function takes in db connection and orgid, returns bookiename
+function getBookie($conn, $orgid) {
+   $bsql = "select firstname from accts, orgs where orgid = $orgid and bookieid=uid";
+   $bresult = query($conn, $bsql);
+   $row = $bresult->fetchRow(MDB2_FETCHMODE_ASSOC);
+   return $row["firstname"];
+}
+
+
+// ----------
+// Function takes in db connection and formid, returns row that is result
+// of query that searches for all details about the form
+function getFormInfo($conn, $fid) {
+   $fsql = "select * from forms where fid=$fid";
+   $fresult = query($conn, $fsql);
+   $row = $fresult->fetchRow(MDB2_FETCHMODE_ASSOC);
+   return $row;
+}
+
+
+// ----------
+// Function takes in db connection and formid, 
+// searches for all details about all the events associated with the form
+// and echoes a row of the event data that is added in the table of events
+function getEvents($conn, $fid) {
+   $esql = "select * from events where fid=$fid";
+   $eresult = query($conn, $esql);
+
+   // creates new table row for each event
+   while ($row = $eresult->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+      $newRow = "<tr>";
+      $newRow .= "<td>".$row["ename"]."</td>";
+      $newRow .= "<td>".$row["edate"]."</td>";
+      $newRow .= "<td>".$row["num_attendees"]."</td>";
+      $newRow .= "<td>".$row["category"]."</td>";
+      $newRow .= "<td>".$row["amnt"]."</td>";
+      $newRow .= "<td>".$row["fundsrc"]."</td>";
+      $newRow .= "</tr>";
+      echo ($newRow);
+   }
+}
+
+
+// ----------
+// Function takes in db connection, formid and orgid,
+// searches for FOAPAL information and location/amount information
+// and echoes the rows of data that are added in the FOAPAL table
+function getFoapal($conn, $fid, $orgid) {
+
+   // uses helper function to get foapal numbers using orgid
+   $orgInfo = getOrgInfo($conn, $orgid);
+   $sofc = $orgInfo["sofc"];
+   $profits = $orgInfo["profits"];
+   $clce = $orgInfo["clce"];
+
+   // uses helper function to get location and amount information
+   $formInfo = getFormInfo($conn, $fid);
+   $sofc_amnt = $formInfo["sofc_amnt"];
+   $sofc_loc = $formInfo["sofc_loc"];
+   $profit_amnt = $formInfo["profit_amnt"];
+   $profit_loc = $formInfo["profit_loc"];
+   $clce_amnt = $formInfo["clce_amnt"];
+   $clce_loc = $formInfo["clce_loc"];
+   $ttl_amnt = $formInfo["ttl_amnt"];   
+
+   $sofcRow = "<tr><td>81".$sofc."</td><td>4610</td>";
+   $sofcRow .= "<td>7998</td><td>981</td><td>SOFC</td>";
+   $sofcRow .= "<td>".$sofc_loc."</td><td>".$sofc_amnt."</td>";
+
+   $profitsRow = "<tr><td>83".$profits."</td><td>4620</td>";
+   $profitsRow .= "<td>7998</td><td>982</td><td>PROFITS</td>";
+   $profitsRow .= "<td>".$profit_loc."</td><td>".$profit_amnt."</td>";
+
+   $clceRow = "<tr><td>83".$clce."</td><td>4620</td>";
+   $clceRow .= "<td>7999</td><td>982</td><td>CLCE</td>";
+   $clceRow .= "<td>".$clce_loc."</td><td>".$clce_amnt."</td>";
+
+   $ttlRow = "<tr><td></td><td></td><td></td><td></td>";
+   $ttlRow .= "<td></td><td>TOTAL AMOUNT</td><td>".$ttl_amnt."</td></tr>";
+
+   echo ($sofcRow.$profitsRow.$clceRow.$ttlRow);
+}
+
+
+// ----------
+// Function that takes in db connection and formid 
+// searches to see whether special instructions exist
+// if so, displays special instructions
+function getSpecInst($conn, $fid) {
+   echo ("<script>console.log('Calling getSpecInstr...');</script>"); 
+   
+   // uses helper function to get forminfo
+   $spec_inst = getFormInfo($conn, $fid)["spec_inst"];
+   $email = getFormInfo($conn, $fid)["email"];
+
+   if ($spec_inst != NULL) {
+      echo ("<script>console.log( 'There are special instructions' )</script>");
+      echo ("<h3>Special Instructions</h3>");
+      
+      if ($spec_inst == "send_check") {
+         echo ("<p>Send check to address listed above.<p>");
+      
+      } elseif ($spec_inst == "email_check") {
+          $emailInst = "<p>Person to e-mail when check is ready for pick up at the \
+Cashier's Window in Green Hall: ";
+	  $emailInst .= $email."</p>";
+	  echo $emailInst;
+      }
+   } else {
+
+      echo ("<script>console.log( 'There are no special instructions' );</script>");
+   }	  
+}
+
+
+// ----------
+// Function that takes in db connection and formid
+// searches for the receipts associated with formid
+// displays the receipts
+function getReceipts($conn, $fid) {
+   $rsql = "select rfile from receipts where fid=$fid";
+   $rresult = query($conn, $rsql);
+   while ($row=$rresult->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+      $filename = $row["rfile"];
+      echo ("<p><img src='../$destsubdir/$filename'></p>");
+   }
+}
+
+
+// ----------
+// Function that takes in db connection and formid
+// searches for the lists of attendees associated with formid
+// displays the lists of attendees
+function getAttendees($conn, $fid) {
+   $asql = "select afile from attendees where fid=$fid";
+   $aresult = query($conn, $fid);
+   while ($row=$aresult->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+      $filename = $row["afile"];
+      echo ("<p><img src='../$destsubdir/$filename'></p>");
+   }
+}
+
+
+// ----------
+// Function that takes in db connection and formid
+// changes status of this form in bookie_approval table to "approved"
+function bookieApproves($conn, $fid) {
+   // Gets current date when bookie clicks approval button
+   $approveDate = date('Y-m-d');
+   echo ("<p>console.log($approveDate);</p>");
+
+   $comments = htmlspecialchars($_POST["comments"]);
+   
+   try {
+
+      $sql = "update bookie_approval set status='approved', status_date='$approveDate', comments=? where fid=$fid";
+      $result = prepared_query($conn, $sql, array($comments));
+   
+   } catch (PDOException  $e){
+      echo "<script>console.log( 'Database Insertion Error: $e');</script>";
+   }
+}
+
+
+// ----------
+// Function that takes in db connection and formid
+// "sends" this form to bursar for approval by
+// inserting this form into bursar_approval table
+function sendToBursar($conn, $fid) {
+   // Gets current date when bookie "sends" form to bursar
+   $sendDate = date('Y-m-d');
+   $sql = "insert into bursar_approval(fid, status, status_date) values ($fid, 'not_checked', '$sendDate')";
+
+   try {
+       $conn->exec($sql);
+   } catch (PDOException  $e){
+      echo "<script>console.log( 'Database Insertion Error: $e');</script>";
+   }
+}
+
+
+// ----------
+// Function that takes in db connection and formid
+// changes status of form in bookie_approval table to "rejected"
+function bookieRejects($conn, $fid) {
+   // Gets current date	when bookie clicks reject button
+   $rejectDate = date('Y-m-d');
+   $comments = htmlspecialchars($_POST["comments"]);
+
+   try {
+      $sql = "update bookie_approval set status='rejected', status_date='$rejectDate', comments=? where fid=$fid";
+      $result = prepared_query($conn, $sql, array($comments));
+   } catch (PDOException  $e){
+      echo "<script>console.log( 'Database Insertion Error: $e');</script>";
+   }
+}
+
+
+
+
+?>

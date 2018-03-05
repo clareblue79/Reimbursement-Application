@@ -1,0 +1,295 @@
+/* CS 304 - Final Project
+  File Name: style.css
+  Team Name: Chily
+  Programmers: Clare Lee and Hanae Yaskawa
+  Last Modified Date: 18/04/17
+*/
+
+body{
+    font-family: 'Quicksand', sans-serif;
+    color: white;
+    align-content: center;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    background-color:#007A87;
+}
+
+html { height: 100%; margin: 0px; padding: 0px; }
+
+#sofc_form{
+    color:black;
+    background-color: white;
+}
+
+#sofc_form .header{
+    width: 75%;
+}
+
+#sofc_form .header p{
+    font-size: 15px;
+    width: 65%;
+    margin: auto;
+    text-align: justify;
+    
+}
+
+.header {
+    padding: 2%;
+    width: 60%;
+    text-align: center;
+    margin: auto;
+}
+        
+.header h1{
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.header p{
+    font-size: 20px;
+}
+        
+.signup{
+    font-size: 12px;
+}
+    
+.login, .signup, .forgot, #request_form {
+   
+    margin: auto;
+    border: 3px solid #f1f1f1;
+    background-color: #A0D6D2;
+    color: black;
+}
+
+
+.login, .signup, .forgot {
+    width: 50%;
+}
+
+#request_form{
+    width: 80%;
+    padding: 2%;
+    text-align: justify;
+    background-color: whitesmoke;
+}
+
+#request_form label{
+    margin: 5px;
+    font-size: 16px;
+    font-weight: bolder;
+    padding: 3px;
+}
+
+.instruction{
+    margin: auto;
+    color: firebrick;
+}
+
+#request_form h3{
+    margin-top: 5%;
+    margin-bottom: 3%;
+}
+
+#request_form textarea{
+    overflow: auto;
+    margin: auto;
+    width: 100%;
+}
+
+.login input[type=text], .login input[type=password], .signup input, .forgot input, select{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    background-color:  #002776;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+#request_form button{
+    width: auto;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+}
+
+.container {
+    width: 90%;
+    padding: 16px;
+}
+
+span.psw {
+    color: white;
+    float: right;
+    padding-top: 16px;
+}
+.psw a{
+    color: aquamarine;
+}
+
+#addItem{
+    margin-top: 20px; 
+    float: right;
+}
+
+#list-reimb{
+    margin-top: 3%;
+}
+
+#list-reimb th, td{
+    height: 50px;
+    margin: auto;
+    border: 1px solid darkgray;
+    background-color: aliceblue;
+}
+
+table{
+    width: 100%;
+    text-align: center;
+}
+
+#savedForms td{
+    font-size: 13px !important;
+    background-color: whitesmoke!important;
+}
+#savedForms th, #savedForms{
+    height: 50px;
+    margin: auto;
+    border: 1px solid darkgray;
+    color: black;
+}
+
+.profile{
+    display: block;
+    width: 85%;
+    height: 100%;
+    margin-left:15%;
+    background-color: #c0e8e5;
+    text-align: center;
+    color: black;
+    clear:both;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    
+}
+
+.profile h1{
+    padding: 20px;
+    width: 100%;
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 15%;
+    background-color: aliceblue;
+    position: fixed;
+    float:left;
+    height: 100%;
+    overflow: auto;
+}
+
+.navbar li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.navbar li a.active {
+    background-color: #002776;
+    color: white;
+}
+
+.navbar li a:hover:not(.active){
+    background-color: #007A87;
+    color: white;
+}
+
+.welcome{
+    font-size: 20px;
+}
+
+#accordion{
+    width: 90%;
+    margin: auto;
+}
+
+#accordion a{
+    text-decoration: none;
+}
+
+.notificationBoard{
+    text-align:justify; 
+    background-color: white;
+    width: 80%;
+    margin-top: 15px;
+    padding: 25px;
+    height: auto;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.notimessage{
+    color: green;
+    text-align: center;
+}
+
+.about{
+    width: 80%;
+    margin: auto;
+    padding: 25px;
+    background-color: white;
+    color: black;
+    text-align: justify;
+    border-radius: 10px;
+}
+
+.accountSettings{
+    margin: auto;
+    width: 85%;
+    background-color: whitesmoke;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.accountSettings input{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.message{
+    color: firebrick;
+    font: 12px;
+}
+
+#formDisplay p{
+    color: black;
+    font-size: 18px;
+}
+
+.welcome{
+    font-size: 24px;
+    color: navy;
+}

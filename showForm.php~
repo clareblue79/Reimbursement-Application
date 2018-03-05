@@ -1,0 +1,139 @@
+<!-- CS 304 Final Project: Wellesley Reimbursement Website
+Team name: CHiLY
+Programmers: Clare Lee, Hanae Yaskawa
+File: showForm.php
+Description: The reimbursement form that has been submitted by a treasurer and is shown to the bookie, student bursar, and controller's office for them to approve or reject.
+-->
+
+<!doctype html>
+<html lang="en">
+
+
+<?php
+   // ID of current form
+   $fid = ?;
+   
+   ob_start();
+   session_start();
+   require_once("/home/cs304/public_html/php/DB-functions.php");
+   require_once("header.php");
+   require_once("showFunc.php");
+   require_once("setup.php");
+   require_once("redirect.php");
+    
+   $testUser = $_SESSION['user'];
+   $testAccount = $_SESSION['accountType'];
+    
+   // echo ("<script> console.log( $testUser is a $testAccount);</script>");
+   
+   redirect("form");
+    
+   // gets organization information using helper functions in showFunc.php
+   $orgid = getOrgid($conn, $fid);
+   $orginfo = getOrgInfo($conn,$orgid);
+   $orgname = $orginfo["orgname"];
+
+   // gets bookie name
+   $bookiename = getBookie($conn, $orgid);
+   
+   // gets form information
+   $formInfo = getFormInfo($conn, $fid);
+
+   ?>
+
+
+<body id="sofc_form">
+<div id="request_form">
+   <div class="header">
+     <h1>SOFC Check Request Form</h1>
+     <p>Please approve or reject the reimbursement request form.</p>
+   </div>
+
+   <div id='formDisplay'>
+     <p>Organization: <?php echo($orgname) ?></p>
+     <p>Bookkeeper: <?php echo($bookiename) ?></p>
+     <p>Date Prepared: <?php echo($formInfo["date_prepared"]) ?></p>
+     <p><?php echo($formInfo["reimb_person"]) ?> requesting reimbursement:<br>
+       <?php echo($formInfo["reimb_name"]) ?><br>
+       <?php echo($formInfo["reimb_id"]) ?><br>
+       <?php echo($formInfo["reimb_address"]) ?><br>
+     </p>
+
+     <p>Purpose: <?php echo($formInfo["purpose"]) ?></p>
+   </div>
+  
+  <table id="list_reimb">
+    <tr>
+      <td>Event</td>
+      <td>Date of Event</td>
+      <td># of Student Attendees</td>
+      <td>Category</td>
+      <td>Amount</td>
+      <td>Funding Source</td>
+    </tr>
+    <?php getEvents($conn, $fid) ?>
+    </table>
+
+   <h3>ACCOUNTING INFORMATION (FOAPAL #)</h3>
+   <table id="list_foapal">
+    <tr>
+      <td>Fund (5)</td>
+      <td>Org (4)</td>
+      <td>Acct (4)</td>
+      <td>Prgm (3)</td>
+      <td>Activity (6)</td>
+      <td>Location (3)</td>
+      <td>Amount*</td>
+    </tr>
+    <?php getFoapal($conn, $fid, $orgid) ?>
+   </table>
+
+   <h3>Uploaded Receipts</h3>
+  
+   <?php getReceipts($conn, $fid) ?>
+ 
+   <h3>Uploaded Lists of Attendees</h3>
+
+   <?php getAttendees($conn, $fid) ?>
+
+
+   <?php
+     getSpecInst($conn, $fid);
+   ?>
+
+
+   <form action=<?php echo $_SERVER['PHP_SELF']; ?> method="post">
+      <h3>Comments:</h3><textarea rows="10" columns="100" name="comments"></textarea>
+      <button type="submit" value="approved" name="approve_btn">Approve</button>
+      <button type="submit" value="rejected" name="reject_btn">Reject</button>
+   </form>
+
+
+   <?php
+      if (isset($_POST["approve_btn"])){
+         echo("<script>console.log('Approved button pressed.);</script>");
+         bookieApproves($conn, $fid);
+         sendToBursar($conn, $fid);
+
+         // redirects browser
+         header("Location: formReview.php");
+         exit();
+      }
+
+      elseif (isset($_POST["reject_btn"])) {
+         echo("<script>console.log('Reject button pressed.);</script>");
+         bookieRejects($conn, $fid);
+      
+         // redirect browser
+         header("Location: formReview.php");
+         exit();
+      }
+
+   ?>
+  
+    
+</div>
+</body>
+
+
+</html>

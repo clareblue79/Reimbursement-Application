@@ -1,0 +1,86 @@
+<!-- CS 304: Final Project
+File Name: formPage.php
+Programmers: Clare Lee, Hanae Yaskawa
+Team Name: CHILY
+Last Modified Date: 04/21/2017 
+
+Home Page for our Reimbursement Application -->
+
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta name=author content="Clare Frances Lee">
+    <title>Wellesley Reimbursement </title>
+    
+    <!-- GOOGLE FONT -->
+    <link href="https://fonts.googleapis.com/css?family=Bitter|Droid+Serif|Graduate|Montserrat|PT+Sans|Playfair+Display|Quicksand" rel="stylesheet">
+    
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    
+    <!-- BOOTSTRAP: Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- BOOTSTRAP: Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+  
+       <!-- CUSTOM CSS -->
+    <link href="style.css" rel="stylesheet">
+    
+    
+</head>
+    
+<body>
+    <?php
+        ob_start();
+        session_start();
+        require_once("/home/cs304/public_html/php/DB-functions.php");
+        require_once('navBar.php');
+        require_once('setup.php');
+        require_once('redirect.php');
+        redirect("treasurer");
+        getNav("formPage",$_SESSION['accountType']);
+        require_once('getFormForReview.php');
+    
+        $userID = $_SESSION['user'];
+        $arrlength = getCount($conn, $userID , 'forms');
+    
+    ?>
+   
+    
+    <div class="profile">
+    
+
+       <h1> Your Reimbursement Forms</h1>
+         <?php echo "<p> You have $arrlength submitted forms. </p>"; ?>
+        
+        <div class="about">
+        <a href='form.php'>Sumbit a New Form</a>
+        <table id="savedForms">
+            
+      <tr>
+	<td>FID </td>
+	<td>Event Name </td>
+	<td>Total Amount</td>
+	<td>Submitted Date </td>
+	<td>Status</td>
+      </tr>
+            
+     <?php 
+            getForms($conn, $userID)
+    ?>
+	
+   </table>
+            
+        
+        </div>
+        
+     </div>
+        
+
+</body>
+
+</html>
+
+<?php ob_end_flush(); ?>

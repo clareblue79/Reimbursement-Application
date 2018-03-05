@@ -1,0 +1,95 @@
+<!-- CS 304: Final Project
+File Name: formPage.php
+Programmers: Clare Lee, Hanae Yaskawa
+Team Name: CHILY
+Last Modified Date: 04/21/2017 
+
+Home Page for our Reimbursement Application -->
+
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta name=author content="Clare Frances Lee">
+    <title>Wellesley Reimbursement </title>
+    
+    <!-- GOOGLE FONT -->
+    <link href="https://fonts.googleapis.com/css?family=Bitter|Droid+Serif|Graduate|Montserrat|PT+Sans|Playfair+Display|Quicksand" rel="stylesheet">
+    
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    
+    <!-- BOOTSTRAP: Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- BOOTSTRAP: Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+  
+       <!-- CUSTOM CSS -->
+    <link href="style.css" rel="stylesheet">
+    
+    
+</head>
+    
+<body>
+    <?php
+        ob_start();
+        session_start();
+        require_once("/home/cs304/public_html/php/DB-functions.php");
+        require_once('navBar.php');
+        require_once('setup.php');
+        require_once('redirect.php');
+        require_once('getFormForReview.php');
+    
+        redirect("bookkeeper");
+        
+        getNav("formReview",$_SESSION['accountType']);
+    
+        $userID = $_SESSION['user'];
+        $arrlength = getCount($conn, $userID , 'bookie');
+    
+       
+    
+    
+    
+    ?>
+   
+    
+    <div class="profile">
+    
+
+       <h1> Forms to Review</h1>
+        
+        <?php echo "<p> You have $arrlength forms to review. </p>"; ?>
+        <div class="about">
+        <table id="savedForms">
+      <tr>
+	<td>FID </td>
+	<td>Org Name </td>
+	<td>Total Amount</td>
+    <td>Sumbitted Date </td>
+    <td>Link</td>
+      </tr>
+    <?php
+        if($arrlength == 0){
+          
+            echo "<tr><td colspan=5>You have reviewed everything!</td><tr>";
+        } else {
+            
+            getFormReviews($conn, $userID);
+        }
+    ?>
+	
+   </table>
+            
+        
+        </div>
+        
+     </div>
+        
+
+</body>
+
+</html>
+
+<?php ob_end_flush(); ?>
